@@ -7,7 +7,7 @@
 typedef struct subString {
 	int key;
 	int value;
-	struct cache *next;
+	struct subString *next;
 	
 	UT_hash_handle hh;
 } subString;
@@ -44,7 +44,7 @@ subString *addChar(int key, int value)
 	subChar->key = key;
 	subChar->value = value;
 	subChar->next = NULL;
-	
+
 	HASH_ADD_INT(subStringList, key, subChar);
 	
 	return subChar;
@@ -72,7 +72,7 @@ void addToTail(subString *subChar)
 
 void charProcess(int key, int value)
 {
-	subString *subChar = findChar(ch);
+	subString *subChar = findChar(key);
 	if (subChar == NULL)
 	{
 		subChar = addChar(key, value);
@@ -89,23 +89,67 @@ void charProcess(int key, int value)
 			delChar = tmpChar;
 			
 			subStringLen--;
-			maxSubIndexLow++;
 		}
 		
 		subStringHead->next = delChar->next;
+		subStringLen--;
 		
 		subChar->value = value;
 		subChar->next = NULL;
 	}
-	
+
 	addToTail(subChar);
 	subStringLen++;
 	
-	maxSubStringLen = (maxSubStringLen >= subStringLen) ? maxSubStringLen : subStringLen;
-	maxSubIndexHigh = value;
+	printf("maxSubStringLen: %d, subStringLen: %d\n", maxSubStringLen, subStringLen);
+	
+	if (maxSubStringLen < subStringLen)
+	{
+		maxSubStringLen = subStringLen;
+		maxSubIndexLow = subStringHead->next->value;
+		maxSubIndexHigh = subStringTail->value;
+	}
+}
+
+void subStringProcess(char *str, int len)
+{
+	int i = 0;
+	for (; i < len; i++)
+	{
+		charProcess(str[i], i);
+	}
+}
+
+void subStringPrint(char *str)
+{
+	printf("Longest sub string %d ~ %d: ", maxSubIndexLow, maxSubIndexHigh);
+	int i = 0;
+	for (i = maxSubIndexLow; i <= maxSubIndexHigh; i++)
+	{
+		printf("%c", str[i]);
+	}
+	printf("\n");
+
+	printf("Current sub string: ");
+	subString *subChar = subStringHead->next;
+	while (subChar != subStringTail)
+	{
+		printf("%c", subChar->key);
+		subChar = subChar->next;
+	}
+
+	if (subStringTail)
+	{
+		printf("%c\n", subStringTail->key);
+	}
 }
 
 void longestSubString_test()
 {
+	char str[] = "abcddlkjaflksdjfklk";
+
+	subStringInit();
 	
+	subStringProcess(str, strlen(str));
+	subStringPrint(str);
 }

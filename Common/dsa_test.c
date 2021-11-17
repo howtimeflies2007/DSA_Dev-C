@@ -10,10 +10,12 @@ typedef struct {
 
 extern void LRU_test();
 extern void addTwoNumber_test();
+extern void longestSubString_test();
 
 testSuit test[] = {
-	{ "LRU", 				LRU_test },
-	{ "addTwoNum", 			addTwoNumber_test },
+	{ "LRU", 					LRU_test },
+	{ "addTwoNum", 				addTwoNumber_test },
+	{ "longestSubString", 		longestSubString_test },
 };
 
 void testRun(char *testName)

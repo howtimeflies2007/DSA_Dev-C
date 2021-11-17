@@ -8,5 +8,7 @@ extern void testRun(char *testName);
 int main(int argc, char *argv[]) {
 	printf("DSA Test!\n");
 	
+	testRun("longestSubString");
+	
 	return 0;
 }
